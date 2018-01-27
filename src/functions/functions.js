@@ -1,5 +1,5 @@
 export function addObjectToArray(object, array) {
-  return [...array, object];
+  array = [...array, object];
 };
 
 export function updateObjectInArrayByIndex(object, array, index) {

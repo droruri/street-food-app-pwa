@@ -4,7 +4,7 @@ import * as mutations from '../mutationTypes';
 import * as getters from '../gettersTypes';
 import * as actions from '../actionsTypes';
 import * as firebase from 'firebase';
-
+import Restaurant from "../../classes/Restaurant";
 
 export const restaurantsModule = {
   state: {
@@ -17,7 +17,7 @@ export const restaurantsModule = {
   },
   mutations: {
     [mutations.ADD_RESTAURANT](state, restaurant) {
-      arrayFunctions.addObjectToArray(restaurant, state.restaurants);
+      state.restaurants.push(restaurant);
     },
     [mutations.EDIT_RESTAURANT](state, restaurant) {
       const index = _.findIndex(state.restaurants, (arrayRestaurant) => arrayRestaurant.id === restaurant.id)
@@ -33,6 +33,8 @@ export const restaurantsModule = {
   },
   actions: {
     [actions.addRestaurant]({commit}, restaurant) {
+      let newRestaurant = firebase.database().ref('restaurant').push(restaurant);
+      restaurant.id = newRestaurant.key;
       commit(mutations.ADD_RESTAURANT, restaurant);
     },
     [actions.editRestaurant]({commit}, restaurant) {
@@ -42,10 +44,17 @@ export const restaurantsModule = {
       commit(mutations.DELETE_RESTAURANT, restaurnat)
     },
     [actions.initializeRestaurants]({commit}) {
-      console.log(this.$parent);
+      console.log(this);
       firebase.database().ref('restaurant').once('value')
         .then((data) => {
-          commit(mutations.INITIALIZE_RESTAURANTS, data.val())
+          let restaurants = [];
+          const obj = data.val();
+          for (let key in obj) {
+            restaurants.push(
+              new Restaurant(key, obj[key].name, obj[key].description, obj[key].displayPhoto, obj[key].address)
+            )
+          }
+          commit(mutations.INITIALIZE_RESTAURANTS, restaurants)
         });
     },
   }

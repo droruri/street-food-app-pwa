@@ -1,8 +1,8 @@
 <template>
     <v-layout row wrap>
-      <v-flex sm6 offset-sm3>
-        <v-card v-for="restaurant in restaurants" :key="restaurant.id">
-          <v-card-media :src="restaurant.displayPhoto" height="200px" width="200px">
+       <v-flex sm6 xs12 v-for="restaurant in restaurants" :key="restaurant['.key']">
+        <v-card>
+          <v-card-media :src="restaurant.displayPhoto" height="500px">
           </v-card-media>
           <v-card-title primary-title>
             <div>
@@ -30,15 +30,6 @@
     methods:{
       getRestaurantDetails(id){
         this.$router.push({path: `/restaurant-details/${id}`});
-      },
-      onDialogOpen(){
-        console.log(this.$refs);
-      },
-      onAccept(){
-        console.log('bla');
-      },
-      onDecline(){
-        console.log('bla');
       }
     }
   }
